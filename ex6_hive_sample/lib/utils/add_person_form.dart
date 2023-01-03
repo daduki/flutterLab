@@ -13,6 +13,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
   final _nameController = TextEditingController();
   final _countryController = TextEditingController();
   final _phoneNumberController = TextEditingController();
+  final _emailController = TextEditingController();
   final _personFormKey = GlobalKey<FormState>();
 
   late final Box box;
@@ -30,6 +31,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
       name: _nameController.text,
       country: _countryController.text,
       phoneNumber: _phoneNumberController.text,
+      email: _emailController.text,
     );
 
     box.add(newPerson);
@@ -67,7 +69,12 @@ class _AddPersonFormState extends State<AddPersonForm> {
             controller: _phoneNumberController,
             validator: _fieldValidator,
           ),
-
+          SizedBox(height: 24.0),
+          Text('Email'),
+          TextFormField(
+            controller: _emailController,
+            validator: _fieldValidator,
+          ),
           Spacer(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 24.0),

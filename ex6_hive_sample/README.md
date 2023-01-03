@@ -1,4 +1,4 @@
-# Flutter app in Zapp!
+# ex6_hive_excercise
 
 A new Flutter project.
 

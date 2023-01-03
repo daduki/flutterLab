@@ -22,6 +22,7 @@ class _UpdatePersonFormState extends State<UpdatePersonForm> {
   late final _nameController;
   late final _countryController;
   late final _phoneNumberController;
+  late final _emailController;
   late final Box box;
 
   String? _fieldValidator(String? value) {
@@ -37,6 +38,7 @@ class _UpdatePersonFormState extends State<UpdatePersonForm> {
       name: _nameController.text,
       country: _countryController.text,
       phoneNumber: _phoneNumberController.text,
+      email: _emailController.text,
     );
 
     box.putAt(widget.index, newPerson);
@@ -51,7 +53,9 @@ class _UpdatePersonFormState extends State<UpdatePersonForm> {
     box = Hive.box('peopleBox');
     _nameController = TextEditingController(text: widget.person.name);
     _countryController = TextEditingController(text: widget.person.country);
-    _phoneNumberController = TextEditingController(text: widget.person.phoneNumber);
+    _phoneNumberController =
+        TextEditingController(text: widget.person.phoneNumber);
+    _emailController = TextEditingController(text: widget.person.email);
   }
 
   @override
@@ -76,6 +80,12 @@ class _UpdatePersonFormState extends State<UpdatePersonForm> {
           Text('Phone Number'),
           TextFormField(
             controller: _phoneNumberController,
+            validator: _fieldValidator,
+          ),
+          SizedBox(height: 24.0),
+          Text('Email'),
+          TextFormField(
+            controller: _emailController,
             validator: _fieldValidator,
           ),
           Spacer(),

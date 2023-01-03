@@ -65,7 +65,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   ),
                   child: ListTile(
                     title: Text(personData.name),
-                    subtitle: Text(personData.country),
+                    subtitle: Text(personData.phoneNumber),
                     trailing: IconButton(
                       onPressed: () => _deleteInfo(index),
                       icon: Icon(

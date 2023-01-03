@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'person.g.dart';
 
@@ -13,9 +14,13 @@ class Person {
   @HiveField(2)
   final String phoneNumber;
 
+  @HiveField(3)
+  final String email;
+
   Person({
     required this.name,
     required this.country,
     required this.phoneNumber,
+    required this.email,
   });
 }
