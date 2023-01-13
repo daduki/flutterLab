@@ -2,6 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:async/async.dart';
+import 'dart:math';
+
 
 void main() async {
 
@@ -244,41 +248,90 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (_, index) {
                 final currentItem = _items[index];
                 final currentCategoryItem = _categoryItems[index];
-                return Card(
-                  color: Colors.orange.shade50,
-                  margin: const EdgeInsets.all(10),
-                  elevation: 3,
-                  child: ListTile(
-                      title: Text(currentItem['date']),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            currentItem['journal'].toString(),
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            currentCategoryItem['category'].toString(),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ],
+                return Slidable(
+                  key: const ValueKey(0),
+                  startActionPane: ActionPane(
+                    // A motion is a widget used to control how the pane animates.
+                    motion: const ScrollMotion(),
+
+                    // A pane can dismiss the Slidable.
+                    //dismissible: DismissiblePane(onDismissed: () {}),
+
+                    // All actions are defined in the children parameter.
+                    children: [
+                      // A SlidableAction can have an icon and/or a label.
+                      SlidableAction(
+                        flex: 2,
+                        onPressed: doNothing,
+                        backgroundColor: Color(0xFF0392CF),
+                        foregroundColor: Colors.white,
+                        icon: Icons.save,
+                        label: 'Save',
                       ),
-                      //subtitle: Text(currentItem['journal'].toString()),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Edit button
-                          IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () =>
-                                  _showForm(context, currentItem['key'], currentCategoryItem['key'])),
-                          // Delete button
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _deleteItem(currentItem['key']),
-                          ),
-                        ],
-                      )),
+                      SlidableAction(
+                        onPressed: doNothing,
+                        backgroundColor: Color(0xFF21B7CA),
+                        foregroundColor: Colors.white,
+                        icon: Icons.share,
+                        label: 'Share',
+                      ),
+                    ],
+                  ),
+
+                  endActionPane: ActionPane(
+                    motion: ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (BuildContext context){
+                          print('${currentItem['key']}');
+                          _showForm(context, currentItem['key'], currentCategoryItem['key']);
+                        },
+                        flex: 2,
+                        backgroundColor: Color(0xFF7BC043),
+                        foregroundColor: Colors.white,
+                        icon: Icons.edit,
+                        label: 'Edit',
+                      ),
+                      SlidableAction(
+                        onPressed: (BuildContext context){
+                          print('${currentItem['key']}');
+                          _deleteItem(currentItem['key']);
+                        },
+                        backgroundColor: Color(0xFFFE4A49),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Delete',
+                      ),
+                    ],
+                  ),
+
+                  //color: Colors.orange.shade50,
+                  //margin: const EdgeInsets.all(10),
+                  //elevation: 3,
+                  child: ListTile(
+                    contentPadding : EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                    tileColor: Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(0.1),
+                    title: Text(currentItem['date']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          currentItem['journal'].toString(),
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          currentCategoryItem['category'].toString(),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               }),
       // Add new item button
@@ -288,4 +341,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+void doNothing(BuildContext context) {
 }
