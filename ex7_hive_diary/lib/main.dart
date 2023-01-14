@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) => Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(ctx).viewInsets.bottom,
-                  top: 15,
+                  top: 10,
                   left: 15,
                   right: 15),
               child: Column(
@@ -158,22 +158,23 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   TextField(
+                    style: TextStyle(fontWeight: FontWeight.bold),
                     controller: _dateController,
                     decoration:
                         const InputDecoration(hintText: 'Date : YYMMDD'),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   TextField(
                     controller: _journalController,
                     keyboardType: TextInputType.multiline,
-                    maxLines: 5,
+                    maxLines: 8,
                     decoration:
                         const InputDecoration(hintText: 'Write journals here.'),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   TextField(
                     controller: _categoryController,
@@ -181,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                         const InputDecoration(hintText: 'category #AAA #BBB'),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 5,
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -219,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(itemKey == null ? 'Create New' : 'Update'),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 10,
                   )
                 ],
               ),
