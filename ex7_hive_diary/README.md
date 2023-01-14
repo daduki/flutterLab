@@ -1,4 +1,4 @@
-# Flutter app in Zapp!
+# ex7_hive_diary
 
 A new Flutter project.
 

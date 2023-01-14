@@ -1,17 +1,22 @@
 // main.dart
+import 'dart:math';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'dart:math';
 import 'dart:async';
+import 'diary.model.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  // await Hive.deleteBoxFromDisk('journal_box');
-  await Hive.openBox('journal_box');
-  await Hive.openBox('category_box');
+
+  Hive.registerAdapter(DiaryModelAdapter());
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+  await Hive.openBox('diary_box');
 
   runApp(const MyApp());
 }
@@ -40,10 +45,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _items = [];
-  List<Map<String, dynamic>> _categoryItems = [];
 
-  final _journalBox = Hive.box('journal_box');
-  final _categoryBox = Hive.box('category_box');
+  final _diaryBox = Hive.box('diary_box');
 
   @override
   void initState() {
@@ -53,64 +56,47 @@ class _HomePageState extends State<HomePage> {
 
   // Get all items from the database
   void _refreshItems() {
-    final data = _journalBox.keys.map((key) {
-      final value = _journalBox.get(key);
-      return {"key": key, "date": value["date"], "journal": value['journal']};
-    }).toList();
-
-    final cData = _categoryBox.keys.map((key) {
-      final value = _categoryBox.get(key);
-      return {"key": key, "date": value["date"], "category": value['category']};
+    final data = _diaryBox.keys.map((key) {
+      final value = _diaryBox.get(key);
+      return {
+        "key": key,
+        "id": value["id"],
+        "title": value["title"],
+        "bodyJournal": value["bodyJournal"],
+        "category": value["category"],
+        "dateJournal": value["dateJournal"],
+        "isStared": value['isStared']
+      };
     }).toList();
 
     setState(() {
       _items = data.reversed.toList();
-      _categoryItems = cData.reversed.toList();
       // we use "reversed" to sort items in order from the latest to the oldest
     });
   }
 
   // Create new item
   Future<void> _createItem(Map<String, dynamic> newItem) async {
-    await _journalBox.add(newItem);
-    _refreshItems(); // update the UI
-  }
-
-  // Create new item
-  Future<void> _createCategoryItem(Map<String, dynamic> newItem) async {
-    await _categoryBox.add(newItem);
+    await _diaryBox.add(newItem);
     _refreshItems(); // update the UI
   }
 
   // Retrieve a single item from the database by using its key
   // Our app won't use this function but I put it here for your reference
   Map<String, dynamic> _readItem(int key) {
-    final item = _journalBox.get(key);
-    return item;
-  }
-
-  Map<String, dynamic> _readCategoryItem(int key) {
-    final item = _categoryBox.get(key);
+    final item = _diaryBox.get(key);
     return item;
   }
 
   // Update a single item
   Future<void> _updateItem(int itemKey, Map<String, dynamic> item) async {
-    await _journalBox.put(itemKey, item);
-    _refreshItems(); // Update the UI
-  }
-
-  // Update a single item
-  Future<void> _updateCategoryItem(
-      int itemKey, Map<String, dynamic> item) async {
-    await _categoryBox.put(itemKey, item);
+    await _diaryBox.put(itemKey, item);
     _refreshItems(); // Update the UI
   }
 
   // Delete a single item
   Future<void> _deleteItem(int itemKey) async {
-    await _journalBox.delete(itemKey);
-    await _categoryBox.delete(itemKey);
+    await _diaryBox.delete(itemKey);
     _refreshItems(); // update the UI
 
     // Display a snackbar
@@ -120,27 +106,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   // TextFields' controllers
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
   final TextEditingController _journalController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _isStaredController = TextEditingController();
 
   // This function will be triggered when the floating button is pressed
   // It will also be triggered when you want to update an item
-  void _showForm(BuildContext ctx, int? itemKey, int? categoryItemKey) async {
+  void _showForm(BuildContext ctx, int? itemKey) async {
     // itemKey == null -> create new item
     // itemKey != null -> update an existing item
 
     if (itemKey != null) {
       final existingItem =
           _items.firstWhere((element) => element['key'] == itemKey);
-      _dateController.text = existingItem['date'];
-      _journalController.text = existingItem['journal'];
-    }
-
-    if (categoryItemKey != null) {
-      final existingCategoryItem = _categoryItems
-          .firstWhere((element) => element['key'] == categoryItemKey);
-      _categoryController.text = existingCategoryItem['category'];
+      _idController.text = existingItem['id'];
+      _titleController.text = existingItem['title'];
+      _journalController.text = existingItem['bodyJournal'];
+      _categoryController.text = existingItem['category'];
+      _isStaredController.text = existingItem['isStared'];
     }
 
     showModalBottomSheet(
@@ -159,9 +144,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   TextField(
                     style: TextStyle(fontWeight: FontWeight.bold),
-                    controller: _dateController,
-                    decoration:
-                        const InputDecoration(hintText: 'Date : YYMMDD'),
+                    controller: _titleController,
+                    decoration: const InputDecoration(hintText: 'Title'),
                   ),
                   const SizedBox(
                     height: 5,
@@ -184,36 +168,56 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 5,
                   ),
+                  TextField(
+                    controller: _idController,
+                    decoration:
+                        const InputDecoration(hintText: 'Enter your ID'),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextField(
+                    controller: _isStaredController,
+                    decoration:
+                        const InputDecoration(hintText: 'isStared option(ING)'),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   ElevatedButton(
                     onPressed: () async {
                       // Save new item
                       if (itemKey == null) {
                         _createItem({
-                          "date": _dateController.text,
-                          "journal": _journalController.text
-                        });
-                        _createCategoryItem({
-                          "date": _dateController.text,
-                          "category": _categoryController.text
+                          "id": _idController.text,
+                          "title": _titleController.text,
+                          "bodyJournal": _journalController.text,
+                          "category": _categoryController.text,
+                          "dateJournal":
+                              DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                          "isStared": _isStaredController.text,
                         });
                       }
 
                       // update an existing item
                       if (itemKey != null) {
                         _updateItem(itemKey, {
-                          'date': _dateController.text.trim(),
-                          'journal': _journalController.text.trim()
-                        });
-                        _updateCategoryItem(itemKey, {
-                          'date': _dateController.text.trim(),
-                          'category': _categoryController.text.trim()
+                          'id': _idController.text.hashCode,
+                          'title': _titleController.text.trim(),
+                          'bodyJournal': _journalController.text.trim(),
+                          'category': _categoryController.text.trim(),
+                          'dateJournal':
+                              DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                          'isStared': _isStaredController.text.trim(),
                         });
                       }
 
                       // Clear the text fields
-                      _dateController.text = '';
+                      _idController.text = '';
+                      _titleController.text = '';
                       _journalController.text = '';
                       _categoryController.text = '';
+                      _isStaredController.text = '';
 
                       Navigator.of(context).pop(); // Close the bottom sheet
                     },
@@ -245,12 +249,11 @@ class _HomePageState extends State<HomePage> {
               itemCount: _items.length,
               itemBuilder: (_, index) {
                 final currentItem = _items[index];
-                final currentCategoryItem = _categoryItems[index];
                 return Slidable(
                   key: const ValueKey(0),
-                  startActionPane: ActionPane(
+                  startActionPane: const ActionPane(
                     // A motion is a widget used to control how the pane animates.
-                    motion: const ScrollMotion(),
+                    motion: ScrollMotion(),
 
                     // A pane can dismiss the Slidable.
                     //dismissible: DismissiblePane(onDismissed: () {}),
@@ -276,12 +279,12 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   endActionPane: ActionPane(
-                    motion: ScrollMotion(),
+                    motion: const ScrollMotion(),
                     children: [
                       SlidableAction(
                         flex: 2,
-                        onPressed: (_) => _showForm(context, currentItem['key'],
-                            currentCategoryItem['key']),
+                        onPressed: (_) =>
+                            _showForm(context, currentItem['key']),
                         backgroundColor: Color(0xFF7BC043),
                         foregroundColor: Colors.white,
                         icon: Icons.edit,
@@ -303,14 +306,16 @@ class _HomePageState extends State<HomePage> {
                   //margin: const EdgeInsets.all(10),
                   //elevation: 3,
                   child: ListTile(
-                    onTap: () => _showForm(context, currentItem['key'],
-                        currentCategoryItem['key']),
+                    onTap: () => _showForm(context, currentItem['key']),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                    tileColor: Colors
-                        .primaries[Random().nextInt(Colors.primaries.length)]
-                        .withOpacity(0.1),
-                    title: Text(currentItem['date']),
+                    tileColor: Colors.primaries[(currentItem['key'] % 20)]
+                        .withOpacity(0.2),
+                    title: Text(
+                      currentItem['title'],
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -318,15 +323,24 @@ class _HomePageState extends State<HomePage> {
                           height: 8,
                         ),
                         Text(
-                          currentItem['journal'].toString(),
+                          currentItem['bodyJournal'].toString(),
                           textAlign: TextAlign.left,
                         ),
                         const SizedBox(
                           height: 5,
                         ),
                         Text(
-                          currentCategoryItem['category'].toString(),
+                          currentItem['category'].toString(),
                           textAlign: TextAlign.justify,
+                        ),
+                        Text(
+                          currentItem['id'].toString(),
+                          textAlign: TextAlign.justify,
+                        ),
+                        Text(
+                          currentItem['dateJournal'].toString(),
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(color: Colors.grey, fontSize: 10),
                         ),
                       ],
                     ),
@@ -335,7 +349,7 @@ class _HomePageState extends State<HomePage> {
               }),
       // Add new item button
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showForm(context, null, null),
+        onPressed: () => _showForm(context, null),
         child: const Icon(Icons.add),
       ),
     );

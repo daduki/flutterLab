@@ -1,4 +1,4 @@
-name: ex7_hive_in_flutter
+name: ex7_hive_diary
 description: Make local database using hive in flutter
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -18,6 +18,7 @@ dependencies:
   async: ^2.9.0
   intl: ^0.17.0
   flutter_slidable: ^2.0.0
+  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:
