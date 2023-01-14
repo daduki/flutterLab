@@ -1,14 +1,11 @@
 // main.dart
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:async/async.dart';
 import 'dart:math';
-
+import 'dart:async';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
@@ -17,7 +14,6 @@ void main() async {
   await Hive.openBox('category_box');
 
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -28,9 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Simple Diary',
-      theme: ThemeData(
-        primaryColor: Colors.black
-      ),
+      theme: ThemeData(primaryColor: Colors.black),
       home: const HomePage(),
     );
   }
@@ -107,7 +101,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Update a single item
-  Future<void> _updateCategoryItem(int itemKey, Map<String, dynamic> item) async {
+  Future<void> _updateCategoryItem(
+      int itemKey, Map<String, dynamic> item) async {
     await _categoryBox.put(itemKey, item);
     _refreshItems(); // Update the UI
   }
@@ -143,9 +138,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (categoryItemKey != null) {
-      final existingCategoryItem =
-          _categoryItems.firstWhere((element) => element['key'] == categoryItemKey);
-      _dateController.text = existingCategoryItem['date'];
+      final existingCategoryItem = _categoryItems
+          .firstWhere((element) => element['key'] == categoryItemKey);
       _categoryController.text = existingCategoryItem['category'];
     }
 
@@ -165,7 +159,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   TextField(
                     controller: _dateController,
-                    decoration: const InputDecoration(hintText: 'Date : YYMMDD'),
+                    decoration:
+                        const InputDecoration(hintText: 'Date : YYMMDD'),
                   ),
                   const SizedBox(
                     height: 10,
@@ -173,15 +168,17 @@ class _HomePageState extends State<HomePage> {
                   TextField(
                     controller: _journalController,
                     keyboardType: TextInputType.multiline,
-                    maxLines: 10,
-                    decoration: const InputDecoration(hintText: 'Write journals here.'),
+                    maxLines: 5,
+                    decoration:
+                        const InputDecoration(hintText: 'Write journals here.'),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: _categoryController,
-                    decoration: const InputDecoration(hintText: 'category #AAA #BBB'),
+                    decoration:
+                        const InputDecoration(hintText: 'category #AAA #BBB'),
                   ),
                   const SizedBox(
                     height: 20,
@@ -261,7 +258,6 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       // A SlidableAction can have an icon and/or a label.
                       SlidableAction(
-                        flex: 2,
                         onPressed: doNothing,
                         backgroundColor: Color(0xFF0392CF),
                         foregroundColor: Colors.white,
@@ -282,19 +278,16 @@ class _HomePageState extends State<HomePage> {
                     motion: ScrollMotion(),
                     children: [
                       SlidableAction(
-                        onPressed: (BuildContext context){
-                          print('${currentItem['key']}');
-                          _showForm(context, currentItem['key'], currentCategoryItem['key']);
-                        },
                         flex: 2,
+                        onPressed: (_) => _showForm(context, currentItem['key'],
+                            currentCategoryItem['key']),
                         backgroundColor: Color(0xFF7BC043),
                         foregroundColor: Colors.white,
                         icon: Icons.edit,
                         label: 'Edit',
                       ),
                       SlidableAction(
-                        onPressed: (BuildContext context){
-                          print('${currentItem['key']}');
+                        onPressed: (BuildContext context) {
                           _deleteItem(currentItem['key']);
                         },
                         backgroundColor: Color(0xFFFE4A49),
@@ -309,8 +302,13 @@ class _HomePageState extends State<HomePage> {
                   //margin: const EdgeInsets.all(10),
                   //elevation: 3,
                   child: ListTile(
-                    contentPadding : EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                    tileColor: Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(0.1),
+                    onTap: () => _showForm(context, currentItem['key'],
+                        currentCategoryItem['key']),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                    tileColor: Colors
+                        .primaries[Random().nextInt(Colors.primaries.length)]
+                        .withOpacity(0.1),
                     title: Text(currentItem['date']),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,5 +341,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void doNothing(BuildContext context) {
-}
+void doNothing(BuildContext context) {}
