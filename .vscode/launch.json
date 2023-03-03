@@ -1,0 +1,168 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "baby_sleeper",
+            "cwd": "baby_sleeper",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "baby_sleeper (profile mode)",
+            "cwd": "baby_sleeper",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "baby_sleeper (release mode)",
+            "cwd": "baby_sleeper",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex1_StartupNameGen",
+            "cwd": "ex1_StartupNameGen",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex1_StartupNameGen (profile mode)",
+            "cwd": "ex1_StartupNameGen",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex1_StartupNameGen (release mode)",
+            "cwd": "ex1_StartupNameGen",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex2_statefulNullSafety",
+            "cwd": "ex2_statefulNullSafety",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex2_statefulNullSafety (profile mode)",
+            "cwd": "ex2_statefulNullSafety",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex2_statefulNullSafety (release mode)",
+            "cwd": "ex2_statefulNullSafety",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex3_carousel_pages",
+            "cwd": "ex3_carousel_pages",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex3_carousel_pages (profile mode)",
+            "cwd": "ex3_carousel_pages",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex3_carousel_pages (release mode)",
+            "cwd": "ex3_carousel_pages",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex4_cupertino_ui",
+            "cwd": "ex4_cupertino_ui",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex4_cupertino_ui (profile mode)",
+            "cwd": "ex4_cupertino_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex4_cupertino_ui (release mode)",
+            "cwd": "ex4_cupertino_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex5_calendar",
+            "cwd": "ex5_calendar",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex5_calendar (profile mode)",
+            "cwd": "ex5_calendar",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex5_calendar (release mode)",
+            "cwd": "ex5_calendar",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex6_hive_sample",
+            "cwd": "ex6_hive_sample",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex6_hive_sample (profile mode)",
+            "cwd": "ex6_hive_sample",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex6_hive_sample (release mode)",
+            "cwd": "ex6_hive_sample",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ex7_hive_diary",
+            "cwd": "ex7_hive_diary",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ex7_hive_diary (profile mode)",
+            "cwd": "ex7_hive_diary",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ex7_hive_diary (release mode)",
+            "cwd": "ex7_hive_diary",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
